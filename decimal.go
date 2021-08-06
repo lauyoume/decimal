@@ -1119,6 +1119,10 @@ func (d Decimal) Truncate(precision int32) Decimal {
 	return d
 }
 
+func (d *Decimal) IsNil() bool {
+	return d.IsZero()
+}
+
 // UnmarshalJSON implements the json.Unmarshaler interface.
 func (d *Decimal) UnmarshalJSON(decimalBytes []byte) error {
 	if string(decimalBytes) == "null" {
@@ -1220,6 +1224,9 @@ func (d *Decimal) Scan(value interface{}) error {
 
 // Value implements the driver.Valuer interface for database serialization.
 func (d Decimal) Value() (driver.Value, error) {
+	if d.IsZero() {
+		return nil, nil
+	}
 	return d.String(), nil
 }
 
